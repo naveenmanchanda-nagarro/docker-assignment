@@ -1,0 +1,26 @@
+server:
+  servlet:
+    contextPath: /docker-demo
+  port: 9012
+
+spring:
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: docker-demo
+    version: 0.0.1
+
+logging:
+  level:
+    root: INFO
+    com.docker.demo: INFO
+    org.springframework: INFO
+    org.springframework.cloud.stream.binder: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers,health

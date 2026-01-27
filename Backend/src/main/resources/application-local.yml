@@ -1,0 +1,25 @@
+server:
+  port: 9012
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/docker-demo?sslmode=disable
+    username: postgres
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        enable_lazy_load_no_trans : true
+    show-sql: true
