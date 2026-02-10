@@ -20,9 +20,9 @@ services:
       retries: 5
  
   backend:
-    build:
-      context: ./backend
-    image: demo-backend:1.0
+    # build:
+    #   context: ./backend
+    image: naveenmanchanda/docker-demo-backend:1.0
     container_name: spring-backend
     ports:
       - "9012:9012"
@@ -36,9 +36,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
 
   frontend:
-    build:
-      context: ./frontend
-    image: demo-frontend:1.0
+    # build:
+    #   context: ./frontend
+    image: naveenmanchanda/docker-demo-frontend:1.0
     container_name: frontend
     ports:
       - "80:80"
