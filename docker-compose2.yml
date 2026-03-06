@@ -1,0 +1,83 @@
+version: "3.9"
+
+# -------------------------------
+# Volumes for persistent data
+# -------------------------------
+volumes:
+  pgusersdata:
+
+# -------------------------------
+# Networks for isolation
+# -------------------------------
+networks:
+  demo-network:
+
+# -------------------------------
+# Services
+# -------------------------------
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: docker-demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgusersdata:/var/lib/postgresql/data:rw
+    networks:
+      - demo-network
+    cap_drop:
+      - ALL
+    security_opt:
+    - no-new-privileges:true
+    # Security: run as non-root UID (postgres already does this)
+    user: "999:999"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    pids_limit: 100
+    
+
+  backend:
+    image: naveenmanchanda/docker-demo-backend:2.0
+    container_name: backend
+    environment:
+      ACTIVE_PROFILE: docker
+    ports:
+      - "9012:9012"
+    networks:
+      - demo-network
+    depends_on:
+      - postgres
+    # Security: run as non-root UID/GID
+    cap_drop:
+      - ALL
+    security_opt:
+    - no-new-privileges:true
+    user: "1000:1000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9012/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    pids_limit: 100
+
+  frontend:
+    image: naveenmanchanda/docker-demo-frontend:1.0
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - demo-network
+    depends_on:
+      - backend
+    cap_drop:
+      - ALL
+    # Security: run as nginx user inside container
+    #user: "101:101"
